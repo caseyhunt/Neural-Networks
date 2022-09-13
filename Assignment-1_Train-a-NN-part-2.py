@@ -14,13 +14,13 @@ y = wine.target
 from sklearn.model_selection import train_test_split
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state = 15, test_size=.3)
-x_train_subsplit, x_junk, y_train_subsplit, y_junk = train_test_split(x_train, y_train, random_state = 15, train_size=.2)
+x_train_subsplit, x_junk, y_train_subsplit, y_junk = train_test_split(x_train, y_train, random_state = 15, train_size=.8)
 
 
 from sklearn.preprocessing import StandardScaler
 stdsc = StandardScaler()
-# stdsc.fit(x_train)
-stdsc.fit(x_train_subsplit)
+stdsc.fit(x_train)
+#stdsc.fit(x_train_subsplit)
 
 x_train_std = stdsc.transform(x_train)
 x_train_subsplit_std = stdsc.transform(x_train_subsplit)
@@ -49,7 +49,7 @@ loss_score = []
 
 for epoch_count in range(start_num_epochs, finish_num_epochs, inc_amt):
   my_classifier = MLPClassifier(activation = 'tanh', random_state = 15, max_iter = epoch_count, learning_rate_init = 0.01, hidden_layer_sizes = [10])
-  my_classifier.fit(x_train_subsplit_std, y_train_subsplit)
+  my_classifier.fit(x_train_std, y_train)
   score = my_classifier.score(x_test_std, y_test)
   pred_scores.append(score)
   loss_score.append(my_classifier.loss_)
@@ -82,8 +82,8 @@ plt.show()
 
 
 # plt.figure(2)
-# y_predicted = mlp.predict(x_test_std)
-# print(metrics.classification_report(y_test, y_predicted))
+y_predicted = my_classifier.predict(x_test_std)
+print(metrics.classification_report(y_test, y_predicted))
 # mat = metrics.confusion_matrix(y_test, y_predicted)
 # sns.heatmap(mat.T, square = True, annot = True, fmt = "d", cbar = False)
 # plt.xlabel("True Label")
